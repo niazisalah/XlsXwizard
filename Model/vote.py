@@ -4,21 +4,19 @@ from Model import combine
 from functools import reduce
 
 
-
+#Fonction pour lire le fichier xlsx
 def openfile(fichier):
     file=openpyxl.load_workbook(fichier)
     return file.active
 
-def calcule_tout_vote(liste):
-    return liste
+
+#Fonction max pour returner le Maximum
 def max(x,y):
     if x>=y:
         return x
     else:
         return y
 
-def compare(liste,var):
-    return any(map)
 
 #fonction qui récupére les ligne d un fichiers
 def alllignes(file,col=1):
@@ -29,6 +27,7 @@ def alllignes(file,col=1):
     for i in range(1,max_l+1):
         list.append(f.cell(row=i,column=col).value)
     return list
+
 #fonction qui retourne la valeur numériqued une ligne
 
 def ligne_value(description,fichier,col=1,col2=2):
@@ -54,6 +53,7 @@ def calculer_vote(fichier1,fichier2,fichier3="result_vote.xlsx",col=1,col2=2):
 
     file3=openpyxl.load_workbook(fichier3)
     f3=file3.active
+
     lignes=pandas.unique(alllignes(fichier1)+alllignes(fichier2))
     for i in range(len(lignes)):
         #on ecrit la valeur de la premiere colonne dans la ligne i

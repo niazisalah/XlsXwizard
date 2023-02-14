@@ -3,28 +3,36 @@ from Model import vote
 import openpyxl
 import pandas
 
-def clean_dup(file_path):
-    # lire le fichier a l'aide de pandas
-    df = pandas.read_excel(file_path)
+#-----------------------------------------------------------------------
+#-----------------on utilisant la bibiliothéque pandas----------------
+#-----------------------------------------------------------------------
+def clean_dup(fichier):
+    # lire le fichier a l'aide de pandas.read_excel
+    df = pandas.read_excel(fichier)
 
     # Compter le nombre des duplicatas
     duplicats = df.duplicated(keep=False).sum()
 
-    # If there are no duplicates, return the dataframe as is
+    # s'il n ya pas de duplicatas
     if duplicats == 0:
         return df
 
-    # Add a new column to the dataframe to store the count of duplicates
+
+    # ajouter une nouvelle colomne qui contien le nombre de duplicats
     df['NOMBRE DE DUBLICATAS'] = df.duplicated(keep='first').astype(int)
 
-    # Drop all the duplicates
+    # On supprime touts les duplicats
     df.drop_duplicates(keep='first', inplace=True)
 
-    # Save the modified dataframe to a new xlsx file
-    df.to_excel(file_path[:-5] + '_modifié.xlsx', index=False)
+    
+    df.to_excel(fichier[:-5] + '_modifié.xlsx', index=False)
 
-    # Return the modified dataframe
-    return df
+
+    return fichier[:-5]+'_modifié.xlsx'
+
+#-----------------------------------------------------------------------
+#-----------------on utilisant la bibiliothéque openpyxl----------------
+#-----------------------------------------------------------------------
 
 def compare_ligne(l1,l2):
     comparaison = list(map(lambda i, j: i == j, l1, l2))
