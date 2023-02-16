@@ -3,7 +3,7 @@ def ignorer_entete(fichier1,fichier2):
     file1 = openpyxl.load_workbook("../file1.xlsx")
     file1_sheet = file1.active
 
-    # Load workbook from file2
+    
     file2 = openpyxl.load_workbook("../file2.xlsx")
     file2_sheet = file2.active
 
@@ -35,5 +35,5 @@ def ignorer_entete(fichier1,fichier2):
             for col in range(1, fichier2_max_colomne + 1):
                 file1_sheet.cell(row=ligne_courante, column=col, value=file2_sheet.cell(row=row, column=col).value)
 
-    # Save the combined data to file1
+    
     file1.save('file1.xlsx')
