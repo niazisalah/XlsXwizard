@@ -15,11 +15,11 @@ if __name__ == '__main__':
     #print(vote.ligne_value("prof1", "file5.xlsx"))
     #print(vote.ligne_value("prof2","file5.xlsx"))
     #print(vote.ligne_value("prof3", "file5.xlsx"))
-    #vote.calculer_vote("file4.xlsx","file5.xlsx")
+    vote.calculer_vote("file1.xlsx","file2.xlsx")
 
     #print(duplacated_data.compare_ligne(['a',0],['a',0]))
     #duplacated_data.traiter_duplicats("file1.xlsx")
-    duplacated_data.clean_dup("file1.xlsx")
+    #duplacated_data.clean_dup("file1.xlsx")
 
 
 
