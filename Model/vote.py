@@ -44,7 +44,7 @@ def ligne_value(description,fichier,col=1,col2=2):
 # fonction qui calcule la somme des votes
 
 
-def calculer_vote(fichier1,fichier2,fichier3="result_vote.xlsx",col=1,col2=2):
+def calculer_vote(fichier1,fichier2,fichier3="resultat_vote.xlsx",col=1,col2=2):
 
     f1=openfile(fichier1)
     f2=openfile(fichier2)
@@ -62,7 +62,7 @@ def calculer_vote(fichier1,fichier2,fichier3="result_vote.xlsx",col=1,col2=2):
         #on rajoute la valeur
         f3.cell(row=(i+1),column=col2,value=ligne_value(lignes[i],fichier1)+ligne_value(lignes[i],fichier2))
 
-    #------> save File 3
+    #------> sauvgarder le ichier File 3
     file3.save(fichier3)
 
     return fichier3
