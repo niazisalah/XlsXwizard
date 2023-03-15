@@ -1,9 +1,12 @@
 import pandas
 from functools import reduce
-# a revoir par la suite
 import openpyxl
 
-# fonction pour désactiver les border et le bold de l'entête
+
+#---------------------------------------------------------------------------------
+#-----------fonction pour désactiver les border et le bold de l'entête------------
+#---------------------------------------------------------------------------------
+
 def disable_bold_border(fichier):
 
     wb = openpyxl.load_workbook(fichier)
@@ -21,32 +24,44 @@ def disable_bold_border(fichier):
 
     wb.save(fichier)
 
-#prend deux valeur en entré une fonction et une liste de fichier
-def combiner_tout(liste_fichier,f):
-    return reduce(lambda x,y:f(x,y),liste_fichier)
 
-#Combinaison horizental
-def combiner(fichier1, fichier2):
+
+#---------------------------------------------------------------------------------
+#--------------fonction qui convertis un fichier xlsx to DataFrame----------------
+#---------------------------------------------------------------------------------
+
+def file_toDataFrame(fichier):
+    ds= pandas.read_excel(fichier)
+    return ds
+
+#---------------------------------------------------------------------------------
+#------------------------------Combinaison vertical-----------------------------
+#---------------------------------------------------------------------------------
+
+def combiner_datahseet_v(df1, df2):
     # lire le premier fichier
 
-    f1 = pandas.read_excel(fichier1)
+    #f1 = pandas.read_excel(fichier1)
 
     # Lire le deuxiéme fichier
-    f2 = pandas.read_excel(fichier2)
+    #f2 = pandas.read_excel(fichier2)
 
     # combiner les deux fichier a l'aide de concat
-    cobinaison = pandas.concat([f1, f2], ignore_index=True)
+    return pandas.concat([df1, df2],axis=0)
 
-    #Creation de fichier de retour
-    create_xlsx_file("result_comb.xlsx")
+#---------------------------------------------------------------------------------
+#--------------------La fonction qui convertie la feuille en fichier--------------
+#---------------------------------------------------------------------------------
 
-    # Enregistrer le fichier sauvegarder
-    cobinaison.to_excel("result_comb.xlsx", index=False)
-    disable_bold_border("result_comb.xlsx")
+def DataFrame_tofile(DataFrame):
+    create_xlsx_file("result_.xlsx")
+    DataFrame.to_excel("result_.xlsx", index=False)
+    disable_bold_border("result_.xlsx")
+    return "result.xlsx"
 
-    return "result_comb.xlsx"
-
-#Creation d'un fichier xlsx
+#---------------------------------------------------------------------------------
+#----------------------------Creation d'un fichier xlsx---------------------------
+#---------------------------------------------------------------------------------
 def create_xlsx_file(file_name):
 
     wb = openpyxl.Workbook()
@@ -55,14 +70,15 @@ def create_xlsx_file(file_name):
 
 
 
+#---------------------------------------------------------------------------------
+#----------------------------Combinaison horizentale------------------------------
+#---------------------------------------------------------------------------------
 
-#Combinaison horizentale
-
-def combiner_h(fichier1,fichier2):
-    # Load the first xlsx file
+def combiner_dataframe_h(fichier1,fichier2):
+    # Charger le premier fichier
     df1 = pandas.read_excel(fichier1)
 
-    # Load the second xlsx file
+    # Charger le deuxiéme fichier
     df2 = pandas.read_excel(fichier2)
 
     # Determiner le nombre de lignes dans chaque fichier
@@ -78,16 +94,24 @@ def combiner_h(fichier1,fichier2):
         df1 = pandas.concat([df1, padding], ignore_index=True)
 
     # Combiner deux  dataframes horizentalement (column-wise)
-    result = pandas.concat([df1, df2], axis=1)
-
-    # On sauvergarde dans un nouveau fichier
-    result.to_excel('resultat.xlsx', index=False)
-    disable_bold_border("resultat.xlsx")
-    return "resultat.xlsx"
-
-# a faire comptage de votes
-# recherche de duplicata (combinaison)
-#tkinter
 
 
-#TClTK
+    return pandas.concat([df1, df2], axis=1)
+
+#---------------------------------------------------------------------------------
+#---------Prend une liste de fichier et retourne une liste de DataFrame-----------
+#---------------------------------------------------------------------------------
+
+def files_toDataFrames(fichiers):
+    return list(map(file_toDataFrame,fichiers))
+
+#---------------------------------------------------------------------------------
+#---------prend deux valeur en entré une fonction et une liste de fichier---------
+#---------------------------------------------------------------------------------
+
+def combiner_tout(fichiers,f):
+
+    DataFrames =files_toDataFrames(fichiers)
+    DataFrame=reduce(lambda x,y:f(x,y),DataFrames)
+
+    return DataFrame_tofile(DataFrame)
