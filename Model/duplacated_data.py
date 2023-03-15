@@ -6,29 +6,22 @@ import pandas
 #-----------------------------------------------------------------------
 #-----------------on utilisant la bibiliothéque pandas----------------
 #-----------------------------------------------------------------------
-def clean_dup(fichier):
-    # lire le fichier a l'aide de pandas.read_excel
-    df = pandas.read_excel(fichier)
 
-    # Compter le nombre des duplicatas
-    duplicats = df.duplicated(keep=False).sum()
+def remove_duplicates(filepath):
+    # Lire le fichier xlsx dans le DataFrame
+    df = pandas.read_excel(filepath)
 
-    # s'il n ya pas de duplicatas
-    if duplicats == 0:
-        return df
+    # supprimer les lignes dupliqué et les compter en même temps
+    df_duplicates = df.groupby(list(df.columns)).size().reset_index().rename(columns={0:'count'})
 
-
-    # ajouter une nouvelle colomne qui contien le nombre de duplicats
-    df['NOMBRE DE DUBLICATAS'] = df.duplicated(keep='first').astype(int)
-
-    # On supprime touts les duplicats
-    df.drop_duplicates(keep='first', inplace=True)
-
-    
-    df.to_excel(fichier[:-5] + '_modifié.xlsx', index=False)
+    # Ecrir le DataFrame
+    df_duplicates.to_excel(f"{filepath}_duplicates_removed.xlsx", index=False)
+    return df_duplicates
 
 
-    return fichier[:-5]+'_modifié.xlsx'
+
+
+
 
 #-----------------------------------------------------------------------
 #-----------------on utilisant la bibiliothéque openpyxl----------------
