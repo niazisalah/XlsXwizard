@@ -26,6 +26,7 @@ if __name__ == '__main__':
     #print(duplacated_data.compare_ligne(['a',0],['a',0]))
     #duplacated_data.traiter_duplicats("file1.xlsx")
     print(parseur.try_vote("template.xlsx"))
+    print(parseur.detecter_xlsx_fonctions("template.xlsx"))
     #print(parseur.parseur("template.xlsx"))
     #remove_duplicates('file1.xlsx')
     # Replace 'example.xlsx' with the path to your xlsx file

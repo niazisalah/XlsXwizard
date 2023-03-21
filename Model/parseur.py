@@ -1,6 +1,7 @@
 import pandas
 import openpyxl
 from Model import dataFrame_file
+from Model import analyseur_cellules
 
 def parseur(fichier_specification):
     spec=dataFrame_file.openfile(fichier_specification)
@@ -71,8 +72,9 @@ def parseur(fichier_specification):
 #la structure suivant va permettre de definir les limites
     return [file1_spec,file2_spec,file_result_spec]
 
+#------------------------------------------------------------
 #fonction pour determiner les dimensions des specifications
-
+#------------------------------------------------------------
 def dimension(list):
     l = [] #lignes
     c=[] #colomnes
@@ -87,38 +89,9 @@ def dimension(list):
 
     return l+c
 #----------------------------------------
-#---------CONTENU DU COLONNE-------------
-#----------------------------------------
-
-def get_column_values(column_number, file_name):
-
-    workbook = openpyxl.load_workbook(file_name)
-    worksheet = workbook.active
-    column_values = []
-
-    for cell in worksheet.iter_cols(min_col=column_number, max_col=column_number):
-        for cell_value in cell:
-            column_values.append(cell_value.value)
-
-    return column_values
-#----------------------------------------
-#----------CONTENU DU LIGNE--------------
-#----------------------------------------
-
-import openpyxl
-
-def get_row_values(row_number, file_name):
-    workbook = openpyxl.load_workbook(file_name)
-    worksheet = workbook.active
-    row_values = []
-
-    for cell in worksheet[row_number]:
-        row_values.append(cell.value)
-
-    return row_values
-#----------------------------------------
 #-------comparer deux listes-------------
 #----------------------------------------
+
 def compare_listes(liste1, liste2):
     if len(liste1) != len(liste2):
         return False
@@ -126,6 +99,7 @@ def compare_listes(liste1, liste2):
         if element not in liste2:
             return False
     return True
+
 #----------------------------------------
 #ajouter les elements de deux listes-----
 #----------------------------------------
@@ -145,14 +119,19 @@ def add_lists(list1, list2):
 
     return result
 
+#----------------------------------------
+#-----------les detecteurs---------------
+#----------------------------------------
 
-#les detecteurs
 def determiner_fonction(fichier_specification):
     #a l interieur on va determiner s il ya une spécification et retourner
 
     try_combinaison_vertical(fichier_specification)
 
     return 0
+
+#----------------------------------------
+#----------------------------------------
 
 def try_combinaison_vertical(fichier_specification):
 
@@ -164,6 +143,9 @@ def try_combinaison_vertical(fichier_specification):
     else:
         return False
 
+#----------------------------------------
+#----------------------------------------
+
 def try_combinaison_horizental(fichier_specification):
     list = parseur(fichier_specification)
     dim = dimension(list)
@@ -173,29 +155,39 @@ def try_combinaison_horizental(fichier_specification):
     else:
         return False
 
+#----------------------------------------
+#----------------------------------------
+
 def detecter_xlsx_fonctions(fichier_specification):
+    list = parseur(fichier_specification)
+    dataspecs = analyseur_cellules.get_column_values(list[2][0], fichier_specification)
+    fonctions=[]
+    for dataspec in dataspecs:
+        fonctions.append(analyseur_cellules.get_fucntion_name(dataspec))
 
 
-    return True
 
-#Fonction pour parser le vote
+    return fonctions
+#----------------------------------------
+#-----Fonction pour parser le vote-------
+#----------------------------------------
 
 def try_vote(fichier_specification):
 
 
     list = parseur(fichier_specification)
     print(list)
-    dataspec=get_column_values(list[2][0],fichier_specification)
-    datafile1 = get_column_values(list[0][0], fichier_specification)
-    datafile2 = get_column_values(list[1][0], fichier_specification)
+    dataspec=analyseur_cellules.get_column_values(list[2][0],fichier_specification)
+    datafile1 = analyseur_cellules.get_column_values(list[0][0], fichier_specification)
+    datafile2 = analyseur_cellules.get_column_values(list[1][0], fichier_specification)
     print(datafile1)
     print(datafile2)
     print(dataspec)
 
     if compare_listes(pandas.unique(datafile1+datafile2),dataspec):
-        dataspec = get_column_values(list[2][1], fichier_specification)
-        datafile1 = get_column_values(list[0][1], fichier_specification)
-        datafile2 = get_column_values(list[1][1], fichier_specification)
+        dataspec = analyseur_cellules.get_column_values(list[2][1], fichier_specification)
+        datafile1 = analyseur_cellules.get_column_values(list[0][1], fichier_specification)
+        datafile2 = analyseur_cellules.get_column_values(list[1][1], fichier_specification)
 
         if compare_listes(dataspec,add_lists(datafile1,datafile2)):
             return True
