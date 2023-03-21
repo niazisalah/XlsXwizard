@@ -1,5 +1,6 @@
 
 from Model import vote
+from Model import parseur
 import pandas
 
 
@@ -20,12 +21,12 @@ if __name__ == '__main__':
     #print(vote.ligne_value("prof3", "file5.xlsx"))
     #vote.calculer_vote("file1.xlsx","file2.xlsx")
 
-    vote.calculer_all_votes(["file1.xlsx","file2.xlsx","file4.xlsx"])
+    #vote.calculer_all_votes(["file1.xlsx","file2.xlsx","file4.xlsx"])
     #vote.calculer_vote("file1.xlsx","file2.xlsx")
     #print(duplacated_data.compare_ligne(['a',0],['a',0]))
     #duplacated_data.traiter_duplicats("file1.xlsx")
-
-
+    print(parseur.try_vote("template.xlsx"))
+    #print(parseur.parseur("template.xlsx"))
     #remove_duplicates('file1.xlsx')
     # Replace 'example.xlsx' with the path to your xlsx file
     #remove_duplicates('file1.xlsx')
