@@ -75,6 +75,7 @@ def parseur(fichier_specification):
 #------------------------------------------------------------
 #fonction pour determiner les dimensions des specifications
 #------------------------------------------------------------
+
 def dimension(list):
     l = [] #lignes
     c=[] #colomnes
@@ -159,15 +160,19 @@ def try_combinaison_horizental(fichier_specification):
 #----------------------------------------
 
 def detecter_xlsx_fonctions(fichier_specification):
+    #->lire le fichier
     list = parseur(fichier_specification)
-    dataspecs = analyseur_cellules.get_column_values(list[2][0], fichier_specification)
+    #->on recupére le contenu de la colomne de fichier 3 dans le fichier de spécification
+    dataspecs = analyseur_cellules.get_column_values(list[2][1], fichier_specification)
     fonctions=[]
-    for dataspec in dataspecs:
-        fonctions.append(analyseur_cellules.get_fucntion_name(dataspec))
+    #on essaye de voir si la colomne de spécification contient des formules ou non 
+
+
 
 
 
     return fonctions
+
 #----------------------------------------
 #-----Fonction pour parser le vote-------
 #----------------------------------------
