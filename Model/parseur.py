@@ -2,6 +2,11 @@ import pandas
 import openpyxl
 from Model import dataFrame_file
 from Model import analyseur_cellules
+from Model import vote
+
+
+
+excel_function=['SUM','AVERAGE','MAX','MIN','CONCATENATE','ABS']
 
 def parseur(fichier_specification):
     spec=dataFrame_file.openfile(fichier_specification)
@@ -124,10 +129,67 @@ def add_lists(list1, list2):
 #-----------les detecteurs---------------
 #----------------------------------------
 
+def dict_to_excel(dict_obj):
+    # Create a new workbook and select the active worksheet
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    # Write the keys to the first row of the worksheet
+    headers = list(dict_obj.keys())
+    for col_num, header in enumerate(headers, 1):
+        ws.cell(row=1, column=col_num, value=header)
+
+    # Write the values to subsequent rows
+    for row_num, values in enumerate(zip(*dict_obj.values()), 2):
+        for col_num, value in enumerate(values, 1):
+            ws.cell(row=row_num, column=col_num, value=value)
+
+    # Save the workbook to a file
+    #wb.save(filename)
+    return wb
+
+
+
+
+
+def compare_workbooks(wb1, wb2):
+    # Load the workbooks
+
+
+    # Loop through each worksheet in each workbook and compare the cell values
+    for sheet1, sheet2 in zip(wb1.worksheets, wb2.worksheets):
+        # Compare the dimensions of the worksheets
+        if sheet1.max_row != sheet2.max_row or sheet1.max_column != sheet2.max_column:
+            print(f"Sheet {sheet1.title} has different dimensions")
+            continue
+
+        # Compare each cell value in the worksheets
+        for row in range(1, sheet1.max_row + 1):
+            for col in range(1, sheet1.max_column + 1):
+                cell1 = sheet1.cell(row=row, column=col)
+                cell2 = sheet2.cell(row=row, column=col)
+                if cell1.value != cell2.value:
+                    print(f"Sheet {sheet1.title}, cell {cell1.coordinate}: {cell1.value} != {cell2.value}")
+
+
 def determiner_fonction(fichier_specification):
     #a l interieur on va determiner s il ya une spécification et retourner
 
-    try_combinaison_vertical(fichier_specification)
+    list=parseur(fichier_specification)
+    file1=  xlsx_toKV(fichier_specification,  list[0][1])
+    file2 = xlsx_toKV(fichier_specification, list[1][1])
+    file3 = xlsx_toKV(fichier_specification, list[2][1])
+    wb1 = dict_to_excel(file1)
+    wb2 = dict_to_excel(file2)
+    wb3 = dict_to_excel(file3)
+
+    #on test vote
+
+    #on test la combinaison vertical
+
+    #on test la combinaison horizental
+
+
 
     return 0
 
@@ -139,7 +201,10 @@ def try_combinaison_vertical(fichier_specification):
     list = parseur(fichier_specification)
     dim = dimension(list)
 
-    if dim[2] > dim[1] and dim[2] > dim[0]:
+    #premiére condition
+    if dim[2] == dim[1] + dim[0]:
+        # deuxiéme condition faut vérifier si le conetenu de colomne est le meme
+
         return True
     else:
         return False
@@ -163,15 +228,16 @@ def detecter_xlsx_fonctions(fichier_specification):
     #->lire le fichier
     list = parseur(fichier_specification)
     #->on recupére le contenu de la colomne de fichier 3 dans le fichier de spécification
-    dataspecs = analyseur_cellules.get_column_values(list[2][1], fichier_specification)
-    fonctions=[]
-    #on essaye de voir si la colomne de spécification contient des formules ou non 
+    fonctions = analyseur_cellules.get_column_values(list[2][1], fichier_specification)
+
+    #on essaye de voir si la colomne de spécification contient des formules ou non
+    for fonction in fonctions:
+        if analyseur_cellules.is_xlsx_formula(fonction):
+            return False
+    return True
 
 
 
-
-
-    return fonctions
 
 #----------------------------------------
 #-----Fonction pour parser le vote-------
@@ -202,6 +268,22 @@ def try_vote(fichier_specification):
     else:
         return False
 
+
+#----------------------------------------
+#------passage au key value--------------
+#----------------------------------------
+
+def xlsx_toKV(file,colomne):
+    l= parseur(file)
+    dict={}
+    spec = dataFrame_file.openfile(file)
+    values=analyseur_cellules.get_column_values(colomne,file)
+    keys =analyseur_cellules.get_column_values(colomne-1,file)
+
+    for i in range (values):
+        dict[keys[i]]=values[i]
+
+    return dict
 
 
 

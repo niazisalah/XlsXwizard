@@ -2,7 +2,7 @@ import openpyxl
 import pandas
 
 from Model import dataFrame_file
-from Model import combine
+
 from functools import reduce
 
 #Fonction max pour returner le Maximum

@@ -1,4 +1,5 @@
 import openpyxl
+
 #--------------------------------------------
 #------detecter le nom de la fonction -------
 #--------------------------------------------
@@ -31,10 +32,10 @@ def is_xlsx_cell(s):
 #--------------------------------------------
 
 def is_xlsx_formula(s):
-    # define regular expression to match XLSX formula pattern
+
     pattern = r'^\=[A-Z]+\([A-Za-z0-9\,\+\-\*\/\(\)]*\)$'
 
-    # check if input string matches pattern
+
     if re.match(pattern, s):
         return True
     else:
@@ -62,12 +63,20 @@ def get_column_values(column_number, file_name):
 
 
 
-def get_row_values(row_number, file_name):
+def get_ligne(ligne_number, file_name):
     workbook = openpyxl.load_workbook(file_name)
     worksheet = workbook.active
-    row_values = []
+    ligne_values = []
 
-    for cell in worksheet[row_number]:
-        row_values.append(cell.value)
+    for cell in worksheet[ligne_number]:
+        ligne_values.append(cell.value)
 
-    return row_values
+    return ligne_values
+#----------------------------------------
+#------detecter une formule--------------
+#----------------------------------------
+def est_formule(chaine):
+    if "=" in chaine:
+        return True
+    else:
+        return False

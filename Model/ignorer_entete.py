@@ -1,10 +1,10 @@
 import openpyxl
 def ignorer_entete(fichier1,fichier2):
-    file1 = openpyxl.load_workbook("../file1.xlsx")
+    file1 = openpyxl.load_workbook("../xlsxfiles/file1.xlsx")
     file1_sheet = file1.active
 
     
-    file2 = openpyxl.load_workbook("../file2.xlsx")
+    file2 = openpyxl.load_workbook("../xlsxfiles/file2.xlsx")
     file2_sheet = file2.active
 
     # Récuperer le  maximum ligne et  colomne of file2

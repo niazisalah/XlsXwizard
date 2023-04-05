@@ -1,9 +1,6 @@
 
 from Model import vote
-from Model import parseur
-import pandas
-
-
+from Model import run
 
 if __name__ == '__main__':
 
@@ -25,14 +22,17 @@ if __name__ == '__main__':
     #vote.calculer_vote("file1.xlsx","file2.xlsx")
     #print(duplacated_data.compare_ligne(['a',0],['a',0]))
     #duplacated_data.traiter_duplicats("file1.xlsx")
-    print(parseur.try_vote("template.xlsx"))
-    print(parseur.detecter_xlsx_fonctions("template.xlsx"))
+    #print(parseur.try_vote("template.xlsx"))
+    #print(parseur.detecter_xlsx_fonctions("template.xlsx"))
     #print(parseur.parseur("template.xlsx"))
     #remove_duplicates('file1.xlsx')
     # Replace 'example.xlsx' with the path to your xlsx file
     #remove_duplicates('file1.xlsx')
     #combine.combiner_tout(["file1.xlsx","file2.xlsx"],combine.combiner_datahseet_v)
     #combine.DataFrame_tofile(combine.combiner_dataframe_h("file1.xlsx","file2.xlsx"))
+    #print(detecterformule.get_formule("formula.xlsx","Sheet1",4))
+    print(run.list_files("/"))
+
 
 
 

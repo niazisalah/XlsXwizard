@@ -2,6 +2,7 @@ import openpyxl
 import pandas
 
 
+
 #---------------------------------------------------------------------------------
 #---------------------Fonction pour lire le fichier xlsx--------------------------
 #---------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ def create_xlsx_file(file_name):
 #--------------------La fonction qui convertie la feuille en fichier--------------
 #---------------------------------------------------------------------------------
 def dataFrame_tofile(DataFrame):
-    create_xlsx_file("result_.xlsx")
+    create_xlsx_file("../result_.xlsx")
     DataFrame.to_excel("result_.xlsx", index=False)
     disable_bold_border("result_.xlsx")
     return "result.xlsx"
@@ -54,3 +55,9 @@ def disable_bold_border(fichier):
 
 
     wb.save(fichier)
+
+def DataFrame(fichier):
+    ds=openfile(fichier)
+    return ds
+
+
