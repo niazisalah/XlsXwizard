@@ -1,7 +1,7 @@
 import pandas
 from functools import reduce
-from Model import dataFrame_file
-
+from openpyxl import load_workbook
+from ProjetSynthese.Model import dataFrame_file
 
 
 #---------------------------------------------------------------------------------
@@ -21,6 +21,43 @@ def combiner_datahseet_v(df1, df2):
 
 
 
+def gocomb(f1,f2):
+    wbtoxlsx(combiner(filetowb(f1),filetowb(f2)))
+def filetowb(file):
+    wb = load_workbook(file)
+
+    return wb
+
+def combiner(wb1, wb2):
+
+    # Charger les données du fichier 1
+
+    feuille1 = wb1.active
+
+    # Charger les données du fichier 2
+
+    feuille2 = wb2.active
+
+    # Copier les données de la feuille 2 à la fin de la feuille 1
+    for row in feuille2.iter_rows(values_only=True):
+        feuille1.append(row)
+
+    # Enregistrer le résultat dans un nouveau fichier Excel
+    #wb1.save(fichier_sortie)
+    return wb1
+
+def wbtoxlsx(wb, fichier_sortie="result.xlsx"):
+    wb.save(fichier_sortie)
+
+
+    return fichier_sortie
+
+
+
+
+
+
+
 
 #---------------------------------------------------------------------------------
 #----------------------------Combinaison horizentale------------------------------
@@ -37,7 +74,7 @@ def combiner_dataframe_h(fichier1,fichier2):
     rows_df1 = df1.shape[0]
     rows_df2 = df2.shape[0]
 
-    # Pad the shorter dataframe with NaN values to make the row count equal
+    
     if rows_df1 > rows_df2:
         padding = pandas.DataFrame(index=range(rows_df1 - rows_df2), columns=df2.columns)
         df2 = pandas.concat([df2, padding], ignore_index=True)
@@ -54,16 +91,26 @@ def combiner_dataframe_h(fichier1,fichier2):
 #---------Prend une liste de fichier et retourne une liste de DataFrame-----------
 #---------------------------------------------------------------------------------
 
-def files_toDataFrames(fichiers):
-    return list(map(dataFrame_file.file_toDataFrame,fichiers))
+def files_towbs(fichiers):
+    return list(map(filetowb, fichiers))
 
 #---------------------------------------------------------------------------------
 #---------prend deux valeur en entré une fonction et une liste de fichier---------
 #---------------------------------------------------------------------------------
 
-def combiner_tout(fichiers,f):
+def combiner_tout(fichiers):
 
-    DataFrames =files_toDataFrames(fichiers)
-    DataFrame=reduce(lambda x,y:f(x,y),DataFrames)
+    wbs =files_towbs(fichiers)
+    DataFrame=reduce(lambda x,y:combiner(x,y),wbs)
+    print("combinaison en cours")
+    print(wbtoxlsx(DataFrame))
+    return wbtoxlsx(DataFrame)
+def combiner_tout2(fichiers):
+
+    #DataFrames =files_toDataFrames(fichiers)
+    DataFrame=reduce(lambda x,y:combiner_dataframe_h(x,y),fichiers)
 
     return dataFrame_file.dataFrame_tofile(DataFrame)
+
+def files_toDataFrames(fichiers):
+    return list(map(dataFrame_file.file_toDataFrame, fichiers))

@@ -1,15 +1,9 @@
 import pandas
-import openpyxl
-from Model import dataFrame_file
-from Model import analyseur_cellules
-from Model import vote
+from ProjetSynthese.Model import analyseur_cellules, combine, dataFrame_file
 
-
-
-excel_function=['SUM','AVERAGE','MAX','MIN','CONCATENATE','ABS']
 
 def parseur(fichier_specification):
-    spec=dataFrame_file.openfile(fichier_specification)
+    spec= dataFrame_file.openfile(fichier_specification)
 
     #on determine la dimension du fichier de specification
 
@@ -202,7 +196,9 @@ def try_combinaison_vertical(fichier_specification):
     dim = dimension(list)
 
     #premiére condition
+    print("on essaye la combinaison vertical")
     if dim[2] == dim[1] + dim[0]:
+        print("on essaye la combinaison vertical")
         # deuxiéme condition faut vérifier si le conetenu de colomne est le meme
 
         return True
@@ -215,8 +211,10 @@ def try_combinaison_vertical(fichier_specification):
 def try_combinaison_horizental(fichier_specification):
     list = parseur(fichier_specification)
     dim = dimension(list)
+    print("on essaye la combinaison horizetal")
     #on test si la dimension le nombre de lignes
     if dim[5] > dim[4] and dim[5] > dim[3]:
+        print("on essaye la combinaison horizetal")
         return True
     else:
         return False
@@ -247,13 +245,11 @@ def try_vote(fichier_specification):
 
 
     list = parseur(fichier_specification)
-    print(list)
-    dataspec=analyseur_cellules.get_column_values(list[2][0],fichier_specification)
+
+    dataspec= analyseur_cellules.get_column_values(list[2][0], fichier_specification)
     datafile1 = analyseur_cellules.get_column_values(list[0][0], fichier_specification)
     datafile2 = analyseur_cellules.get_column_values(list[1][0], fichier_specification)
-    print(datafile1)
-    print(datafile2)
-    print(dataspec)
+
 
     if compare_listes(pandas.unique(datafile1+datafile2),dataspec):
         dataspec = analyseur_cellules.get_column_values(list[2][1], fichier_specification)
@@ -277,8 +273,8 @@ def xlsx_toKV(file,colomne):
     l= parseur(file)
     dict={}
     spec = dataFrame_file.openfile(file)
-    values=analyseur_cellules.get_column_values(colomne,file)
-    keys =analyseur_cellules.get_column_values(colomne-1,file)
+    values= analyseur_cellules.get_column_values(colomne, file)
+    keys = analyseur_cellules.get_column_values(colomne - 1, file)
 
     for i in range (values):
         dict[keys[i]]=values[i]
@@ -292,3 +288,93 @@ def try_dublicats(fichier_specification):
 
 def correction(fichier_specification):
     return True
+
+import openpyxl
+
+def compare_xlsx_files(file1, file2):
+
+    # Load the Excel files
+    wb1 = openpyxl.load_workbook(file1)
+    wb2 = openpyxl.load_workbook(file2)
+
+    # Iterate through all sheets in both files
+    for sheetname in wb1.sheetnames:
+        if sheetname not in wb2.sheetnames:
+            # If sheetname not found in wb2, return False
+            return False
+
+        # Get the corresponding sheet from wb2
+        sheet1 = wb1[sheetname]
+        sheet2 = wb2[sheetname]
+
+        # Iterate through all cells in the sheet
+        for row in range(1, sheet1.max_row + 1):
+            for col in range(1, sheet1.max_column + 1):
+                # Compare the cell values
+                if sheet1.cell(row=row, column=col).value != sheet2.cell(row=row, column=col).value:
+                    # If cell values are not equal, return False
+                    return False
+
+    # If all cells in all sheets are equal, return True
+    return True
+
+
+def extraire_donnees(nom_fichier, col_debut, col_fin, ligne_debut, ligne_fin, nom_nouveau_fichier):
+    # Charger le fichier xlsx
+    wb = openpyxl.load_workbook(nom_fichier)
+
+    # Sélectionner la feuille de calcul active
+    feuille = wb.active
+
+    # Initialiser la liste pour stocker les données extraites
+    donnees = []
+
+    # Parcourir les lignes spécifiées
+    for i in range(ligne_debut, ligne_fin+1):
+        # Initialiser la liste pour stocker les données de la ligne courante
+        ligne = []
+        # Parcourir les colonnes spécifiées
+        for j in range(col_debut, col_fin+1):
+            # Ajouter la valeur de la cellule courante à la liste de la ligne
+            ligne.append(feuille.cell(row=i, column=j).value)
+        # Ajouter la liste de la ligne à la liste de données
+        donnees.append(ligne)
+
+    # Créer un nouveau fichier xlsx pour stocker les données extraites
+    nouveau_wb = openpyxl.Workbook()
+    nouvelle_feuille = nouveau_wb.active
+
+    # Écrire les données extraites dans la nouvelle feuille de calcul
+    for i in range(len(donnees)):
+        for j in range(len(donnees[i])):
+            nouvelle_feuille.cell(row=i+1, column=j+1).value = donnees[i][j]
+
+    # Enregistrer le nouveau fichier xlsx
+    nouveau_wb.save(nom_nouveau_fichier)
+
+
+def trycombh(template):
+    list=parseur(template)
+
+    extraire_donnees(template, list[0][0], list[0][1], list[0][2], list[0][3], "temp1.xlsx")
+    extraire_donnees(template, list[1][0], list[1][1], list[1][2], list[1][3], "temp2.xlsx")
+    extraire_donnees(template, list[2][0], list[2][1], list[2][2], list[2][3], "temp3.xlsx")
+    t= combine.combiner_tout(["temp1.xlsx", "temp2.xlsx"])
+
+    if compare_xlsx_files(t,"temp3.xlsx"):
+        return True
+    else:
+        return False
+
+def trycombv(template):
+    list=parseur(template)
+    print(list)
+    extraire_donnees(template, list[0][0], list[0][1], list[0][2], list[0][3], "temp1.xlsx")
+    extraire_donnees(template, list[1][0], list[1][1], list[1][2], list[1][3], "temp2.xlsx")
+    extraire_donnees(template, list[2][0], list[2][1], list[2][2], list[2][3], "temp3.xlsx")
+    t= combine.combiner_tout2(["temp1.xlsx", "temp2.xlsx"])
+    print(t)
+    if compare_xlsx_files(t,"temp3.xlsx"):
+        return True
+    else:
+        return False

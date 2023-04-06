@@ -1,7 +1,6 @@
 import openpyxl
 import pandas
-
-from Model import dataFrame_file
+from ProjetSynthese.Model import dataFrame_file
 
 from functools import reduce
 
@@ -16,7 +15,7 @@ def max(x,y):
 #fonction qui récupére les ligne d un fichiers
 def alllignes(file,col=1):
     list=[]
-    f=dataFrame_file.openfile(file)
+    f= dataFrame_file.openfile(file)
     max_l=f.max_row
     max_c=f.max_column
     for i in range(1,max_l+1):
@@ -26,7 +25,7 @@ def alllignes(file,col=1):
 #fonction qui retourne la valeur numériqued une ligne
 
 def ligne_value(description,fichier,col=1,col2=2):
-    f=dataFrame_file.openfile(fichier)
+    f= dataFrame_file.openfile(fichier)
     for i in range(1,f.max_row+1):
         if description==f.cell(row=i,column=col).value:
 
@@ -41,8 +40,8 @@ def ligne_value(description,fichier,col=1,col2=2):
 
 def calculer_vote(fichier1,fichier2,col=1,col2=2):
 
-    f1=dataFrame_file.openfile(fichier1)
-    f2=dataFrame_file.openfile(fichier2)
+    f1= dataFrame_file.openfile(fichier1)
+    f2= dataFrame_file.openfile(fichier2)
     #création d un nouveau workbook
     wb = openpyxl.Workbook()
     f3=wb.active
