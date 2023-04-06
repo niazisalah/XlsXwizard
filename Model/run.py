@@ -27,14 +27,14 @@ def selecttemplate(list):
 
 
 def traiter(template,listfile):
-    if(parseur.try_combinaison_vertical(template)):
-        combine.combiner_tout(listfile, combine.combiner_dataframe_v)
+    if(parseur.trycombv(template)):
+        combine.combiner_tout2(listfile)
 
 
     if(parseur.try_vote(template)):
         vote.calculer_all_votes(listfile)
 
 
-    if(parseur.try_combinaison_horizental(template)):
-        combine.combiner_tout(listfile, combine.combiner_dataframe_h)
+    if(parseur.trycombh(template)):
+        combine.combiner_tout(listfile)
 
